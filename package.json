@@ -1,0 +1,33 @@
+{
+  "name": "fancyfinerybackend",
+  "version": "1.0.0",
+  "description": "Back End Node Js Software for Fancyfinery",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.6.10",
+    "mongoose": "^5.13.2",
+    "nodemailer": "^6.6.2",
+    "nodemon": "^2.0.12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mystry22/fancyfinerybackend.git"
+  },
+  "author": "Henry Alaneme",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mystry22/fancyfinerybackend/issues"
+  },
+  "homepage": "https://github.com/mystry22/fancyfinerybackend#readme"
+}
