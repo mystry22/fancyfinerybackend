@@ -31,7 +31,7 @@ app.use('/api/order',order);
 //app.use(express.static('public'));
 app.use('/products', express.static('products'));
 
-const PORT = 4000;
+const PORT = process.env || 4000;
 
 app.listen(PORT, ()=>{
     console.log('listening to port ' + PORT);
