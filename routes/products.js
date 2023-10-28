@@ -3,6 +3,7 @@ const router = express.Router();
 const {getCustomDate} = require('../utility_functions/util_func');
 const {createNewProduct,uploadProductImage,deleteProduct,editProduct,homeProducts,allProducts,
     createCategory,allCategories,prodInfo,shopProducts,searchName} = require('../model/ProductHelper');
+const {cloudinary} = require('../utility_functions/cloudinary');
 const home = require('path').resolve('./');
 
 
@@ -40,7 +41,7 @@ router.post('/addprodimage',async(req,res)=>{
     const prod_id = req.body.prod_id;
     const image_name = req.body.file_name
     const datee = Date.now();
-    const localhost = 'https://fancyfinerybackend.onrender.com'
+    const localhost = 'https://fancybackend.onrender.com/'
     const uploadPath = localhost + image_name;
 
     // try{
