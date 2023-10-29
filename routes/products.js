@@ -41,7 +41,7 @@ router.post('/addprodimage',async(req,res)=>{
     const prod_id = req.body.prod_id;
     const image_name = req.body.file_name
     const datee = Date.now();
-    const localhost = 'https://fancybackend.onrender.com/products'
+    const localhost = 'https://fancybackend.onrender.com/products/'
     const uploadPath = localhost + image_name;
 
     // try{
