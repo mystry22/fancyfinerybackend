@@ -76,12 +76,13 @@ router.post('/addprodimage',async(req,res)=>{
 
         const file = req.files.image;
 
-        file.mv(home+`/products/${file.name}`,err=>{
-            console.error(err);
+        // file.mv(home+`/products/${file.name}`,err=>{
+        //     console.error(err);
             
-        })
-        await uploadProductImage(prod_id,uploadPath)
-        res.json('Product Image Upload Successful');
+        // })
+        // await uploadProductImage(prod_id,uploadPath)
+        // res.json('Product Image Upload Successful');
+        res.json(home);
 
     }
     catch(error){
