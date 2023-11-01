@@ -10,6 +10,11 @@ const Product = new mongoose.Schema({
         min: 2,
         max: 1005
     },
+    video: {
+        type: String,
+        min: 2,
+        max: 1005
+    },
     prod_id: {
         type: String,
         min: 2,

@@ -25,7 +25,8 @@ router.post('/addproduct',(req,res)=>{
         display_home: req.body.display_home,
         image_link: req.body.image_link,
         price_usd: req.body.price_usd,
-        old_price_usd: req.body.old_price_usd
+        old_price_usd: req.body.old_price_usd,
+        video: req.body.video
     };
 
     createNewProduct(data).then(feed =>{
