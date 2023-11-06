@@ -3,9 +3,6 @@ const router = express.Router();
 const {checkExistingCartProd,insertIntoCart,sumCartItems,getCartItems,getSubTotal,deleteCartItem} = require('../model/CartHelper');
 const {getCustomDate} = require('../utility_functions/util_func');
 
-router.post('/ok', async(req,res)=>{
-    res.send('Hello');
-});
 
 router.post('/addtocart', async(req,res)=>{
     
@@ -65,12 +62,12 @@ router.post('/cartsum',async(req,res)=>{
 router.post('/allcartitems',async(req,res)=>{
 
     const ip = req.body.user_ip;
-    await getCartItems(ip)
-    .then(feed=>{
-        if(feed.length >0){
-            res.json(feed)
-        }
-    });
+    const feed = await getCartItems(ip);
+
+    if(feed.length > 0){
+        res.status(200).json(feed)
+    }
+    
 });
 
 router.post('/getsubtotalosum',(req,res)=>{

@@ -12,8 +12,7 @@ const Cart = new mongoose.Schema({
     },
     image_link: {
         type: String,
-        min: 2,
-        max: 1005
+        
     },
     prod_id: {
         type: String,

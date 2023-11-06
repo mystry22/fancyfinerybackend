@@ -1,21 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const {getCustomDate} = require('../utility_functions/util_func');
-const {createNewProduct,uploadProductImage,deleteProduct,editProduct,homeProducts,allProducts,
-    createCategory,allCategories,prodInfo,shopProducts,searchName} = require('../model/ProductHelper');
-const {cloudinary} = require('../utility_functions/cloudinary');
-const home = require('path').resolve('./');
+const { getCustomDate } = require('../utility_functions/util_func');
+const { createNewProduct, uploadProductImage, deleteProduct, editProduct, homeProducts, allProducts,
+    createCategory, allCategories, prodInfo, shopProducts, searchName } = require('../model/ProductHelper');
+
+const Access_key = 'AKIA4PMNUCVFT7RZIQ64';
+const Secrete_access_key = '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';
+const BucketName = 'fancyfinerybucket';
+const Region = 'eu-north-1';
+const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+
+
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: Access_key,
+        secretAccessKey: Secrete_access_key
+    },
+    region: Region
+});
 
 
 
-router.get('/tets', (req,res)=>{
-    res.send('ok');
-})
 
-router.post('/addproduct',(req,res)=>{
-    
+router.post('/addproduct', (req, res) => {
+
     const data = {
-        upload_date : getCustomDate(),
+        upload_date: getCustomDate(),
         prod_name: req.body.prod_name,
         prod_id: req.body.prod_id,
         price: req.body.price,
@@ -29,92 +40,62 @@ router.post('/addproduct',(req,res)=>{
         video: req.body.video
     };
 
-    createNewProduct(data).then(feed =>{
-        if(feed == 'ok'){
+    createNewProduct(data).then(feed => {
+        if (feed == 'ok') {
             res.json('New Product Added');
-        }else{
+        } else {
             res.json('Unable To Add Product');
         }
     })
 });
 
-router.post('/addprodimage',async(req,res)=>{
+
+router.post('/addprodimage', async (req, res) => {
+
     const prod_id = req.body.prod_id;
-    const image_name = req.body.file_name
-    const datee = Date.now();
-    const localhost = 'https://fancybackend.onrender.com/products/'
-    const uploadPath = localhost + image_name;
+    const imageName = 'https://fancyfinerybucket.s3.eu-north-1.amazonaws.com/' +req.files.image.name;
 
-    // try{
-    //     const response = await cloudinary.uploader.
-    //     upload(filestr,{
-    //         upload_preset: 'molenu',
-    //     });
-    //     if(response){
-    //         const image_link = response.secure_url;
+    const params = {
+        Bucket: BucketName,
+        Key: req.files.image.name,
+        Body: req.files.image.data,
+        ContentType: req.files.mimetype
+    }
 
-    //         uploadProductImage(prod_id,image_link).then(feed =>{
-    //                 if(feed == 'ok'){
-    //                     res.json('Product Image Upload Successful');
-    //                 }else{
-    //                     res.json('Product Image Upload Not Successful 2');
-    //                     }
-    //         })
-    //     }
-        
-        
-    // }catch(error){
-    //     console.log(error)
-    // }
-    
+    const command = new PutObjectCommand(params);
+    const response = await s3.send(command);
 
-    try{
-        if(req.files === null){
-            res.json('Product Image Upload Not Successful 2');
-            console.log('not image')
-        }
+    if (response.$metadata.httpStatusCode == 200) {
 
-        const file = req.files.image;
-
-        file.mv(home+`/fancyfinerybackend/products/${file.name}`,err=>{
-            console.error(err);
-            
-        })
-        const success = await uploadProductImage(prod_id,uploadPath)
-        if(success){
+        const success = await uploadProductImage(prod_id, imageName);
+        if (success) {
             res.json('Product Image Upload Successful')
-        }else{
+        } else {
             res.json('Error with image upload')
         }
-        
+
+    } else {
+        res.json('Error with image upload')
 
     }
-    catch(error){
-        console.log('err')
-    }
 
-    
-   
 
-    
-    
-   
 });
 
-router.post('/deleteproduct',(req,res)=>{
+router.post('/deleteproduct', (req, res) => {
     const data = {
         prod_id: req.body.prod_id
     }
-    deleteProduct(data).then(feed =>{
-        if(feed == 'ok'){
+    deleteProduct(data).then(feed => {
+        if (feed == 'ok') {
             res.json('Product Deleted Successfuly');
-        }else{
+        } else {
             res.json('Product Not Deleted');
         }
     })
 });
 
-router.post('/editproduct',(req,res)=>{
+router.post('/editproduct', (req, res) => {
     const prod_id = req.body.prod_id;
     const prod_name = req.body.prod_name;
     const price = req.body.price;
@@ -123,66 +104,66 @@ router.post('/editproduct',(req,res)=>{
     const description = req.body.prod_desc;
     const display_home = req.body.display_home;
 
-    editProduct(prod_id,prod_name,price,old_price,cat_name,description,display_home)
-    .then(feed =>{
-        if(feed == 'ok'){
-            res.json('Product Edited Successfuly');
-        }else{
-            res.json('Product Not Edited Successfuly');
-        }
-    })
+    editProduct(prod_id, prod_name, price, old_price, cat_name, description, display_home)
+        .then(feed => {
+            if (feed == 'ok') {
+                res.json('Product Edited Successfuly');
+            } else {
+                res.json('Product Not Edited Successfuly');
+            }
+        })
 });
 
-router.post('/homeproducts',async(req,res)=>{
+router.post('/homeproducts', async (req, res) => {
     const products = await homeProducts();
     res.json(products);
 });
 
-router.post('/shopproducts',async(req,res)=>{
+router.post('/shopproducts', async (req, res) => {
     const products = await shopProducts();
     res.json(products);
 });
 
-router.post('/allproducts',async(req,res)=>{
-    const allproducts = await allProducts();
-    res.json(allproducts);
+router.post('/allproducts', async (req, res) => {
+    const products = await allProducts();
+    res.json(products);
 });
 
-router.post('/productinfo',async(req,res)=>{
-    
+router.post('/productinfo', async (req, res) => {
+
     const data = {
-        prod_id:req.body.prod_id
+        prod_id: req.body.prod_id
     }
-    
-    const allProducts = await prodInfo(data);
-    res.json(allProducts);
+
+    const prods = await prodInfo(data);
+    res.json(prods);
 });
 
-router.post('/availablecategory',async(req,res)=>{
+router.post('/availablecategory', async (req, res) => {
     const category = await allCategories();
     res.json(category);
 });
 
-router.post('/addcategory',(req,res)=>{
+router.post('/addcategory', (req, res) => {
     const data = {
         cat_name: req.body.cat_name,
         cat_id: req.body.cat_id
     }
-    createCategory(data).then(feed =>{
-        if(feed == 'ok'){
+    createCategory(data).then(feed => {
+        if (feed == 'ok') {
             res.json('New Category Added');
-        }else{
+        } else {
             res.json('No New Category Added');
         }
     })
 });
 
-router.post('/search',async(req,res)=>{
+router.post('/search', async (req, res) => {
     const prod_name = req.body.prod_name;
     const searchRes = await searchName(prod_name);
-    if(searchRes.length > 0){
+    if (searchRes.length > 0) {
         res.json(searchRes);
-    }else{
+    } else {
         res.json('No product found');
     }
 });

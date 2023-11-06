@@ -66,8 +66,7 @@ const Order = new mongoose.Schema({
     },
     image_link:{
         type: String,
-        min: 2,
-        max: 1005
+       
     },
     qty:{
         type: String,

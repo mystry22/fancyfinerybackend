@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {signup,checkEmail,getDetails,getAllUsers} = require('../model/UserModel');
+const {signup,checkEmail,getDetails,} = require('../model/UserModel');
+const {signupAdmin,checkAdminEmail,getAdminDetails,getAllAdmins} = require('../model/AdminModel')
 const {encrypty} = require('../functions/encrypt');
 const {signToken,checkLogin} = require('../functions/jwt');
 const {toDate,welcome} = require('../functions/Helper_functions');
@@ -28,6 +29,31 @@ router.post('/register',async(req,res)=>{
         signup(data);
         const token = await signToken(payload);
         //welcome(email);
+        res.json({msg:'registration okay', token:token});
+      }
+   
+    
+  });
+
+  router.post('/registeradmin',async(req,res)=>{
+    const pass = req.body.pass;
+    const hashedPassword = await encrypty(pass);
+    const email = req.body.email;
+
+    const check = {email:req.body.email};
+    const data = {
+      email: req.body.email,
+      reg_date : toDate(),
+      uniquekey: hashedPassword
+    }
+    const payload = {email : email};
+  
+    const signedUp = await checkAdminEmail(check);
+      if(signedUp){
+        res.json({msg:'user already has an account'});
+      }else{
+        signupAdmin(data);
+        const token = await signToken(payload);
         res.json({msg:'registration okay', token:token});
       }
    
