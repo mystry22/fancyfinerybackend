@@ -3,21 +3,18 @@ const router = express.Router();
 const { getCustomDate } = require('../utility_functions/util_func');
 const { createNewProduct, uploadProductImage, deleteProduct, editProduct, homeProducts, allProducts,
     createCategory, allCategories, prodInfo, shopProducts, searchName } = require('../model/ProductHelper');
-
-const Access_key = 'AKIA4PMNUCVFT7RZIQ64';
-const Secrete_access_key = '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';
-const BucketName = 'fancyfinerybucket';
-const Region = 'eu-north-1';
 const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+require('dotenv').config();
+
 
 
 const s3 = new S3Client({
     credentials: {
-        accessKeyId: Access_key,
-        secretAccessKey: Secrete_access_key
+        accessKeyId: process.env.Access_key,
+        secretAccessKey: process.env.Secrete_access_key
     },
-    region: Region
+    region: process.env.Region
 });
 
 
@@ -56,7 +53,7 @@ router.post('/addprodimage', async (req, res) => {
     const imageName = 'https://fancyfinerybucket.s3.eu-north-1.amazonaws.com/' +req.files.image.name;
 
     const params = {
-        Bucket: BucketName,
+        Bucket: process.env.BucketName,
         Key: req.files.image.name,
         Body: req.files.image.data,
         ContentType: req.files.mimetype
