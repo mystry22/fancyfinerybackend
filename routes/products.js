@@ -3,20 +3,8 @@ const router = express.Router();
 const { getCustomDate } = require('../utility_functions/util_func');
 const { createNewProduct, uploadProductImage, deleteProduct, editProduct, homeProducts, allProducts,
     createCategory, allCategories, prodInfo, shopProducts, searchName } = require('../model/ProductHelper');
-const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 require('dotenv').config();
-
-
-
-const s3 = new S3Client({
-    credentials: {
-        accessKeyId: process.env.Access_key,
-        secretAccessKey: process.env.Secrete_access_key
-    },
-    region: process.env.Region
-});
-
+const PublitioAPI = require('publitio_js_sdk').default;
 
 
 
@@ -49,21 +37,14 @@ router.post('/addproduct', (req, res) => {
 
 router.post('/addprodimage', async (req, res) => {
 
+    const publitio = new PublitioAPI(process.env.API_Key, process.env.API_Secret);
+    const file = req.files.image.data;
     const prod_id = req.body.prod_id;
-    const imageName = 'https://fancyfinerybucket.s3.eu-north-1.amazonaws.com/' +req.files.image.name;
 
-    const params = {
-        Bucket: process.env.BucketName,
-        Key: req.files.image.name,
-        Body: req.files.image.data,
-        ContentType: req.files.mimetype
-    }
+    const isUploaded = await publitio.uploadFile(file, 'file');
 
-    const command = new PutObjectCommand(params);
-    const response = await s3.send(command);
-
-    if (response.$metadata.httpStatusCode == 200) {
-
+    if (isUploaded.code == 201) {
+        const imageName = isUploaded.url_download;
         const success = await uploadProductImage(prod_id, imageName);
         if (success) {
             res.json('Product Image Upload Successful')
@@ -75,7 +56,6 @@ router.post('/addprodimage', async (req, res) => {
         res.json('Error with image upload')
 
     }
-
 
 });
 
