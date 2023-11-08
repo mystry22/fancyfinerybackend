@@ -43,6 +43,10 @@ const Cart = new mongoose.Schema({
         type: Number,
     
     },
+    subtotal_usd : {
+        type: Number,
+    
+    },
     size: {
         type: String
     },

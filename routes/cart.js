@@ -18,6 +18,7 @@ router.post('/addtocart', async(req,res)=>{
     const heights = req.body.heights;
 
     const subtotal = qty*price;
+    const subtotal_usd = qty*price_usd;
     
 
     const data ={
@@ -32,7 +33,8 @@ router.post('/addtocart', async(req,res)=>{
         image_link: image_link,
         description: description,
         heights: heights,
-        price_usd: price_usd
+        price_usd: price_usd,
+        subtotal_usd: subtotal_usd
     }
 
     checkExistingCartProd(prod_id, user_ip).
