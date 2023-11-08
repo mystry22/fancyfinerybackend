@@ -3,8 +3,10 @@ const router = express.Router();
 const { getCustomDate } = require('../utility_functions/util_func');
 const { createNewProduct, uploadProductImage, deleteProduct, editProduct, homeProducts, allProducts,
     createCategory, allCategories, prodInfo, shopProducts, searchName } = require('../model/ProductHelper');
+const {saveCurrencyOption,getCurrency,updateCurrency} = require('../model/UserModel');
 require('dotenv').config();
 const PublitioAPI = require('publitio_js_sdk').default;
+const {contactMail} = require('../functions/Helper_functions');
 
 
 
@@ -144,6 +146,67 @@ router.post('/search', async (req, res) => {
         res.json('No product found');
     }
 });
+
+router.post('/contact',async(req,res)=>{
+
+    const from = req.body.email;
+    const subject = req.body.subject;
+    const message = req.body.message;
+    const full_name = req.body.full_name;
+
+    try{
+        console.log('trying to send')
+        const response = await contactMail(full_name,from,message,subject);
+        if(response === 'OK'){
+        res.json('mail sent');
+        }else{
+        res.json('Unable to complete action at the moment');
+        }
+    }catch(err){
+        console.log(err)
+        res.json('Unable to complete action at the moment');
+    }
+    
+    
+});
+
+router.post('/changecurrency',async(req,res)=>{
+  
+    const ip = req.body.ip;
+    const currOption = req.body.base_currency;
+
+    const isSet = await getCurrency({'ip':ip});
+
+    if(isSet){
+        await updateCurrency(ip,currOption);
+        res.json('currency update')
+    }else{
+        const data ={
+            ip:ip,
+            base_currency: currOption
+        }
+        await saveCurrencyOption(data);
+        res.json('currency update')
+    }
+
+    
+});
+
+router.post('/getcurrency',async(req,res)=>{
+    const ip = req.body.ip;
+    const isSet = await getCurrency({'ip':ip});
+
+    if(isSet){
+    
+        res.json(isSet);
+    }else{
+        res.json('not set');
+    }
+});
+
+
+
+
 
 
 

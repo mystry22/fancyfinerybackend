@@ -1,28 +1,32 @@
 const nodemailer = require('nodemailer');
-const {setUserOTP, updateToken} = require('../model/TokenModel');
+const { setUserOTP, updateToken } = require('../model/TokenModel');
+require('dotenv').config();
 
 // Email Transporter
-const transport =()=>{
+const transport = () => {
     const transport = nodemailer.createTransport({
-        host: "mail.fink.com.ng",
-        port: 587,
-        secure: false, 
+        host: process.env.HOST,
+        name: process.env.SERVER_NAME,
+        port: 465,
+        secureConnection: false,
         auth: {
-          user: "talkto@fink.com.ng",
-          pass: 'Mystry.22'
+            //user: 'talk@fancyfineryhub.com.ng',
+            user: process.env.USER,
+            //pass: 'admmai.332'
+            pass: process.env.USER_PASSWORD
         },
         tls:{
             rejectUnauthorized:false
         }
-      });
+    });
 
-      return transport;
+    return transport;
 }
 // generate OTP
-const genOTP =()=>{
-    const min =1000;
+const genOTP = () => {
+    const min = 1000;
     const max = 9999;
-    const delta = max-min;
+    const delta = max - min;
     const gen = Math.random();
     const initVal = delta * gen;
     const floored = Math.floor(initVal);
@@ -32,7 +36,7 @@ const genOTP =()=>{
 }
 
 // get today's date
-const toDate =()=>{
+const toDate = () => {
     const today = new Date();
     return today;
 }
@@ -40,10 +44,10 @@ const toDate =()=>{
 
 
 //Generate And Send Mail Function
-const mailOTP = async(to)=>{
+const mailOTP = async (to) => {
     const reg_date = toDate();
     const OTP = genOTP();
-    setUserOTP(to,OTP,reg_date);
+    setUserOTP(to, OTP, reg_date);
     let msg = '';
     const transporter = transport();
     const custom = `
@@ -54,25 +58,25 @@ const mailOTP = async(to)=>{
                     
                 Best Regards
                  `;
-   const mailOptions = {
-       from: '<talkto@fink.com.ng>',
-       to: to,
-       subject: "Molenu Email Verification",
-       html: custom
-   }
+    const mailOptions = {
+        from: '<talkto@fink.com.ng>',
+        to: to,
+        subject: "Molenu Email Verification",
+        html: custom
+    }
 
-   const mailRes = await transporter.sendMail(mailOptions);
-   msg =  mailRes.response
-   return msg.substring(4,6);
+    const mailRes = await transporter.sendMail(mailOptions);
+    msg = mailRes.response
+    return msg.substring(4, 6);
 
-   
+
 }
 
 //Generate And Update And Send Mail Function
-const updateMailOTP = async(to)=>{
+const updateMailOTP = async (to) => {
     const reg_date = toDate();
     const OTP = genOTP();
-    updateToken(to,OTP,reg_date);
+    updateToken(to, OTP, reg_date);
     let msg = '';
     const transporter = transport();
     const custom = `
@@ -82,21 +86,21 @@ const updateMailOTP = async(to)=>{
                     
                 Best Regards
                  `;
-   const mailOptions = {
-       from: '<talkto@fink.com.ng>',
-       to: to,
-       subject: "Molenu Email Verification",
-       html: custom
-   }
+    const mailOptions = {
+        from: '<talkto@fink.com.ng>',
+        to: to,
+        subject: "Molenu Email Verification",
+        html: custom
+    }
 
-   const mailRes = await transporter.sendMail(mailOptions);
-   msg =  mailRes.response
-   return msg.substring(4,6);
+    const mailRes = await transporter.sendMail(mailOptions);
+    msg = mailRes.response
+    return msg.substring(4, 6);
 
-   
+
 }
 
-const orderNotification = async(by,fro)=>{
+const orderNotification = async (by, fro) => {
     let msg = '';
     const transporter = transport();
     const custom = `
@@ -108,19 +112,44 @@ const orderNotification = async(by,fro)=>{
                     
                 Best Regards <br /><br />
                  `;
-   const mailOptions = {
-       from: '#Order Notification <talkto@fink.com.ng>',
-       to: 'alanemehenry6@gmail.com',
-       subject: "Molenu Order Notification",
-       html: custom
-   }
+    const mailOptions = {
+        from: '#Order Notification <talkto@fink.com.ng>',
+        to: 'alanemehenry6@gmail.com',
+        subject: "Molenu Order Notification",
+        html: custom
+    }
 
-   const mailRes = await transporter.sendMail(mailOptions);
-   msg =  mailRes.response
-   return msg.substring(4,6);
+    const mailRes = await transporter.sendMail(mailOptions);
+    msg = mailRes.response
+    return msg.substring(4, 6);
 }
 
-const custNotification = async(name,ref,to)=>{
+const contactMail = async (by, fro, msgBody, msgSubject) => {
+    let msg = '';
+    const transporter = transport();
+    const custom = `
+                <h2>Fancy Finery Contact</h2><br /> <br />
+
+                 Hi Dear Team, <br /><br />
+
+                    This is to notify you of the concerns by ${by} with email address ${fro} and body message below: <br /><br /> <p style="color:black; font-weight:bold">${msgBody} </p> <br /> <br /> 
+                    Kindly reach out to this customer and further assist with the stated concern<br /> <br />
+                    
+                Best Regards <br /><br />
+                 `;
+    const mailOptions = {
+        from: 'talk@fancyfineryhub.com.ng',
+        to: 'support@fancyfineryhub.com.ng',
+        subject: msgSubject,
+        html: custom
+    }
+
+    const mailRes = await transporter.sendMail(mailOptions);
+    msg = mailRes.response
+    return msg.substring(4, 6);
+}
+
+const custNotification = async (name, ref, to) => {
     let msg = '';
     const transporter = transport();
     const custom = `
@@ -133,20 +162,20 @@ const custNotification = async(name,ref,to)=>{
                   Henry (Team Lead)<br /><br />
                 Best Regards
                  `;
-   const mailOptions = {
-       from: '#Order Notification <talkto@fink.com.ng>',
-       to: to,
-       subject: "Molenu Order Notification",
-       html: custom
-   }
+    const mailOptions = {
+        from: '#Order Notification <talkto@fink.com.ng>',
+        to: to,
+        subject: "Molenu Order Notification",
+        html: custom
+    }
 
-   const mailRes = await transporter.sendMail(mailOptions);
-   msg =  mailRes.response
-   return msg.substring(4,6);
+    const mailRes = await transporter.sendMail(mailOptions);
+    msg = mailRes.response
+    return msg.substring(4, 6);
 }
 
 
-const mailContact =(from,subject,message,name)=>{
+const mailContact = (from, subject, message, name) => {
     let msg = '';
     const transporter = transport();
     const custom = `
@@ -155,26 +184,26 @@ const mailContact =(from,subject,message,name)=>{
                     ${message} <br /><br />
                 Best Regards
                  `;
-   const mailOptions = {
-       from: '<talkto@fink.com.ng>',
-       to: 'alanemehenry6@gmail.com,help@fink.com.ng',
-       subject: subject,
-       html: custom
-   }
-
-   transporter.sendMail(mailOptions,(error, info)=>{
-    if(error){
-        console.log(error)
-         msg = 'Unable to Complete Request';
-         return msg;
-    }else{
-        msg = 'Your Message Has Been Sent';
-        
+    const mailOptions = {
+        from: '<talkto@fink.com.ng>',
+        to: 'alanemehenry6@gmail.com,help@fink.com.ng',
+        subject: subject,
+        html: custom
     }
-   })
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error)
+            msg = 'Unable to Complete Request';
+            return msg;
+        } else {
+            msg = 'Your Message Has Been Sent';
+
+        }
+    })
 }
 
-const actiAlert =(subject,name,plan,to)=>{
+const actiAlert = (subject, name, plan, to) => {
     let msg = '';
     const transporter = transport();
     const custom = `
@@ -184,26 +213,26 @@ const actiAlert =(subject,name,plan,to)=>{
                     to suit your needs, kindly mail us on help@fink.com.ng <br /><br />
                 Best Regards
                  `;
-   const mailOptions = {
-       from: 'Henry From Fink <talkto@fink.com.ng>',
-       to: to,
-       subject: subject,
-       html: custom
-   }
-
-   transporter.sendMail(mailOptions,(error, info)=>{
-    if(error){
-        console.log(error)
-         msg = 'Unable to Complete Request';
-         return msg;
-    }else{
-        msg = 'Your Message Has Been Sent';
-        
+    const mailOptions = {
+        from: 'Henry From Fink <talkto@fink.com.ng>',
+        to: to,
+        subject: subject,
+        html: custom
     }
-   })
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error)
+            msg = 'Unable to Complete Request';
+            return msg;
+        } else {
+            msg = 'Your Message Has Been Sent';
+
+        }
+    })
 }
 
-const welcome = async(to)=>{
+const welcome = async (to) => {
     let msg = '';
     const transporter = transport();
     const custom = `
@@ -218,16 +247,16 @@ const welcome = async(to)=>{
                     Henry (Team Lead); <br />
                 Best Regards
                  `;
-   const mailOptions = {
-       from: 'Henry From Molenu <talkto@fink.com.ng>',
-       to: to,
-       subject: "Welcome To Molenu",
-       html: custom
-   }
+    const mailOptions = {
+        from: 'Henry From Molenu <talkto@fink.com.ng>',
+        to: to,
+        subject: "Welcome To Molenu",
+        html: custom
+    }
 
-   const mailRes = await transporter.sendMail(mailOptions);
-   msg =  mailRes.response
-   return msg.substring(4,6);
+    const mailRes = await transporter.sendMail(mailOptions);
+    msg = mailRes.response
+    return msg.substring(4, 6);
 }
 
 module.exports.mailOTP = mailOTP;
@@ -235,6 +264,7 @@ module.exports.updateMailOTP = updateMailOTP;
 module.exports.toDate = toDate;
 module.exports.mailContact = mailContact;
 module.exports.actiAlert = actiAlert;
-module.exports.orderNotification =orderNotification;
-module.exports.custNotification =custNotification;
-module.exports.welcome =welcome;
+module.exports.orderNotification = orderNotification;
+module.exports.custNotification = custNotification;
+module.exports.welcome = welcome;
+module.exports.contactMail = contactMail;

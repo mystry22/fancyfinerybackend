@@ -29,6 +29,11 @@ const UserSchema = new mongoose.Schema({
         min: 2,
         max: 1005
     },
+    base_currency: {
+        type: String,
+        min: 2,
+        max: 1005
+    },
 
     
     

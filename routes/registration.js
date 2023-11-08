@@ -18,7 +18,8 @@ router.post('/register',async(req,res)=>{
       phone: req.body.phone,
       email: req.body.email,
       reg_date : toDate(),
-      uniquekey: hashedPassword
+      uniquekey: hashedPassword,
+      base_currency: '₦'
     }
     const payload = {email : email};
   
