@@ -24,6 +24,11 @@ const Cart = new mongoose.Schema({
         min: 2,
         max: 1005
     },
+    price_usd: {
+        type: String,
+        min: 2,
+        max: 1005
+    },
     user_ip: {
         type: String,
         min: 2,

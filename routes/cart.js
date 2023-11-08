@@ -9,6 +9,7 @@ router.post('/addtocart', async(req,res)=>{
     const prod_name = req.body.prod_name;
     const prod_id = req.body.prod_id;
     const price = req.body.price;
+    const price_usd = req.body.price_usd;
     const user_ip = req.body.user_ip;
     const size = req.body.size;
     const qty = req.body.qty;
@@ -30,7 +31,8 @@ router.post('/addtocart', async(req,res)=>{
         qty: qty,
         image_link: image_link,
         description: description,
-        heights: heights
+        heights: heights,
+        price_usd: price_usd
     }
 
     checkExistingCartProd(prod_id, user_ip).
