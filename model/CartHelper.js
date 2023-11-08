@@ -27,9 +27,17 @@ const getCartItems = async function(ip){
 const getSubTotal = async function(ip){
     const subTotal = await Cart.aggregate(
         [
-            {$match: {}},
-            {$group  : {_id: "$user_ip",subtotal :{$sum : "$subtotal"}}}
+            {
+                $group:{
+                    user_ip:ip,
+                    total: {$sum: "$subtotal"}
+                }
+            }
         ]
+        // [
+        //     {$match: {}},
+        //     {$group  : {_id: "$user_ip",subtotal :{$sum : "$subtotal"}}}
+        // ]
     );
     return subTotal;
 }
