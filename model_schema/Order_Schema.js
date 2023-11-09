@@ -55,6 +55,11 @@ const Order = new mongoose.Schema({
         min: 2,
         max: 1005
     },
+    price_usd:{
+        type: String,
+        min: 2,
+        max: 1005
+    },
     subtotal:{
         type: Number,
         
@@ -106,6 +111,11 @@ const Order = new mongoose.Schema({
     remark:{
         type: String,
        
+    },
+    base_currency:{
+        type: String,
+        min: 2,
+        max: 1005
     },
     
     

@@ -1,5 +1,4 @@
 const Order = require('../model_schema/Order_Schema');
-const Cart = require('../model_schema/Cart_Schema');
 
 const saveOrder = async function(data){
     const order = new Order(data);

@@ -22,6 +22,26 @@ const transport = () => {
 
     return transport;
 }
+
+const transportOrder = () => {
+    const transport = nodemailer.createTransport({
+        host: process.env.HOST,
+        name: process.env.SERVER_NAME,
+        port: 465,
+        secureConnection: false,
+        auth: {
+            //user: 'talk@fancyfineryhub.com.ng',
+            user: process.env.ORDER_USER,
+            //pass: 'admmai.332'
+            pass: process.env.ORDER_USER_PASSWORD
+        },
+        tls:{
+            rejectUnauthorized:false
+        }
+    });
+
+    return transport;
+}
 // generate OTP
 const genOTP = () => {
     const min = 1000;
@@ -100,22 +120,62 @@ const updateMailOTP = async (to) => {
 
 }
 
-const orderNotification = async (by, fro) => {
+const orderNotification = async (full_name,
+    email,
+    address,
+    city,
+    country,
+    phone,
+    paid,
+    delivery_fee,
+    base_currency,
+    lga,
+    heights,
+    prod_name,
+    ref,
+    qty,
+    prod_id,
+    todate,
+    image_link) => {
     let msg = '';
-    const transporter = transport();
+    const transporter = transportOrder();
     const custom = `
-                <h2>Molenu New Order</h2><br /> <br />
+                <h2>Fancy Finery New Order Notification</h2><br /> <br />
 
                  Hi Dear Team, <br /><br />
 
-                    A new order has been requested by ${by} with email address ${fro} <br /> Kindly signin to your account and start processing <br /> <br />
+                    A new order has been requested see order details below: <br /><br /> 
+
+                    <p style="color:black; font-weight:bold;">
+
+                    Full Name: ${full_name} <br />
+                    Email: ${email} <br />
+                    Address: ${address} <br />
+                    City: ${city} <br />
+                    LGA: ${lga} <br />
+                    Country: ${country} <br />
+                    Phone: ${phone} <br />
+                    Total Amount: ${paid} <br />
+                    Delivery Fee: ${delivery_fee} <br />
+                    Base Currency: ${base_currency} <br />
+                    Height: ${heights} <br />
+                    Product Name: ${prod_name} <br />
+                    Reference: ${ref} <br />
+                    Quantity: ${qty} <br />
+                    Product ID: ${prod_id} <br />
+                    Order Date: ${todate} <br />
+                    Product Image Link: ${image_link} <br />
+                    </p>
+                    
+                    
+                    <br /> Kindly reach out to customer <br /> <br />
                     
                 Best Regards <br /><br />
                  `;
     const mailOptions = {
-        from: '#Order Notification <talkto@fink.com.ng>',
-        to: 'alanemehenry6@gmail.com',
-        subject: "Molenu Order Notification",
+        from: 'orders@fancyfineryhub.com.ng',
+        to: 'support@fancyfineryhub.com.ng',
+        subject: "New Order Notification",
         html: custom
     }
 

@@ -16,6 +16,11 @@ const {toDate,orderNotification,custNotification} = require('../functions/Helper
     const paid = req.body.amount
     const lga = req.body.lga;
     const city = req.body.city;
+    const base_currency = req.body.base_currency;
+    const delivery_fee = req.body.delivery_fee;
+    const phone = req.body.phone;
+    const country = req.body.country;
+
     getCartItems(ip).then(feed =>{
         feed.forEach(doInsert);
         function doInsert(entry){
@@ -25,6 +30,8 @@ const {toDate,orderNotification,custNotification} = require('../functions/Helper
                 prod_name: entry.prod_name,
                 prod_id: entry.prod_id,
                 price: entry.price,
+                price_usd: entry.price_usd,
+                base_currency:base_currency,
                 user_ip: ip,
                 subtotal: entry.subtotal,
                 size: entry.size,
@@ -32,7 +39,7 @@ const {toDate,orderNotification,custNotification} = require('../functions/Helper
                 image_link: entry.image_link,
                 ref: ref,
                 heights: entry.heights,
-                phone : req.body.phone,
+                phone : phone,
                 paystack_ref: paystack_ref,
                 order_date: toDate(),
                 full_name : full_name,
@@ -40,8 +47,29 @@ const {toDate,orderNotification,custNotification} = require('../functions/Helper
                 paid: paid,
                 total: paid,
                 bal: paid,
-                status: 'Pending'
+                status: 'Pending',
+                country: country,
             }
+            orderNotification(
+              full_name,
+              email,
+              address,
+              city,
+              country,
+              phone,
+              paid,
+              delivery_fee,
+              base_currency,
+              lga,
+              entry.heights,
+              entry.prod_name,
+              ref,
+              entry.qty,
+              entry.prod_id,
+              toDate(),
+              entry.image_link,
+              );
+
             saveOrder(data).then(result=>{
                 if(result == 'ok'){
                    deleteManyCartItems(ip).then(stat =>{

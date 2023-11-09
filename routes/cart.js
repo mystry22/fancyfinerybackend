@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {checkExistingCartProd,insertIntoCart,sumCartItems,getCartItems,getSubTotal,deleteCartItem} = require('../model/CartHelper');
+const {checkExistingCartProd,insertIntoCart,sumCartItems,getCartItems,getSubTotal,deleteCartItem,getSubTotalUsd} = require('../model/CartHelper');
 const {getCustomDate} = require('../utility_functions/util_func');
 
 
@@ -80,6 +80,15 @@ router.post('/getsubtotalosum',(req,res)=>{
     .then(feed=>{
         res.json(feed);
     })
+});
+
+router.post('/getsubtotalosumusd',(req,res)=>{
+    const ip = req.body.ip;
+    getSubTotalUsd(ip)
+    .then(feed=>{
+        res.json(feed);
+    })
+
 });
 
 router.post('/deletecartitem', async(req,res)=>{

@@ -27,17 +27,29 @@ const getCartItems = async function(ip){
 const getSubTotal = async function(ip){
     const subTotal = await Cart.aggregate(
         [
-            {
-                $group:{
-                    user_ip:ip,
-                    total: {$sum: "$subtotal"}
-                }
-            }
+            {$match: {
+                "user_ip" : ip
+            }},
+            {$group  : 
+                {_id: null,
+                subtotal :{$sum : "$subtotal"}
+            }}
         ]
-        // [
-        //     {$match: {}},
-        //     {$group  : {_id: "$user_ip",subtotal :{$sum : "$subtotal"}}}
-        // ]
+    );
+    return subTotal;
+}
+
+const getSubTotalUsd = async function(ip){
+    const subTotal = await Cart.aggregate(
+        [
+            {$match: {
+                "user_ip" : ip
+            }},
+            {$group  : 
+                {_id: null,
+                subtotal :{$sum : "$subtotal_usd"}
+            }}
+        ]
     );
     return subTotal;
 }
@@ -63,5 +75,6 @@ module.exports.insertIntoCart = insertIntoCart;
 module.exports.sumCartItems = sumCartItems;
 module.exports.getCartItems = getCartItems;
 module.exports.getSubTotal = getSubTotal;
-module.exports.deleteCartItem =deleteCartItem;
-module.exports.deleteManyCartItems =deleteManyCartItems;
+module.exports.deleteCartItem = deleteCartItem;
+module.exports.deleteManyCartItems = deleteManyCartItems;
+module.exports.getSubTotalUsd = getSubTotalUsd;
