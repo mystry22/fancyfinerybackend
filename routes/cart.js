@@ -107,7 +107,6 @@ router.post('/deletecartitem', async(req,res)=>{
 
 router.post('/gettotalweightsum', async(req,res)=>{
     const ip = req.body.ip;
-    console.log(req.body);
     const response = await cartWeightSum(ip);
     if(response.length > 0){
         res.json(response);

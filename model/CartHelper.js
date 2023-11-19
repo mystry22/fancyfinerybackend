@@ -72,7 +72,7 @@ const deleteManyCartItems = async function(user_ip){
 }
 
 const cartWeightSum = async function(ip){
-    const subTotal = await Cart.aggregate(
+    const totalWeight = await Cart.aggregate(
         [
             {$match: {
                 "user_ip" : ip
