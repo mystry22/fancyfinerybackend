@@ -17,7 +17,7 @@ router.post('/addtocart', async(req,res)=>{
     const image_link = req.body.image_link;
     const description = req.body.description;
     const heights = req.body.heights;
-
+    const weight = req.body.weight;
     const subtotal = qty*price;
     const subtotal_usd = qty*price_usd;
     
@@ -35,7 +35,8 @@ router.post('/addtocart', async(req,res)=>{
         description: description,
         heights: heights,
         price_usd: price_usd,
-        subtotal_usd: subtotal_usd
+        subtotal_usd: subtotal_usd,
+        weight: weight
     }
 
     checkExistingCartProd(prod_id, user_ip).
@@ -106,6 +107,7 @@ router.post('/deletecartitem', async(req,res)=>{
 });
 
 router.post('/gettotalweightsum', async(req,res)=>{
+    console.log(req.body)
     const ip = req.body.ip;
     const response = await cartWeightSum(ip);
     if(response.length > 0){
