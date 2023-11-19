@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {checkExistingCartProd,insertIntoCart,sumCartItems,getCartItems,getSubTotal,deleteCartItem,getSubTotalUsd} = require('../model/CartHelper');
+const {checkExistingCartProd,insertIntoCart,sumCartItems,getCartItems,
+    getSubTotal,deleteCartItem,getSubTotalUsd,cartWeightSum} = require('../model/CartHelper');
 const {getCustomDate} = require('../utility_functions/util_func');
 
 
@@ -103,6 +104,17 @@ router.post('/deletecartitem', async(req,res)=>{
        res.json('cart item not deleted');
    }
 });
+
+router.post('/gettotalweightsum', async(req,res)=>{
+    const ip = req.body.ip;
+    console.log(req.body);
+    const response = await cartWeightSum(ip);
+    if(response.length > 0){
+        res.json(response);
+    }else{
+        res.json('no item');
+    }
+})
 
 
 

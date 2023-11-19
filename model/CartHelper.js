@@ -70,6 +70,21 @@ const deleteManyCartItems = async function(user_ip){
         return 'ok'
     }
 }
+
+const cartWeightSum = async function(ip){
+    const subTotal = await Cart.aggregate(
+        [
+            {$match: {
+                "user_ip" : ip
+            }},
+            {$group  : 
+                {_id: null,
+                totalWeight :{$sum : "$weight"}
+            }}
+        ]
+    );
+    return totalWeight;
+}
 module.exports.checkExistingCartProd = checkExistingCartProd;
 module.exports.insertIntoCart = insertIntoCart;
 module.exports.sumCartItems = sumCartItems;
@@ -78,3 +93,4 @@ module.exports.getSubTotal = getSubTotal;
 module.exports.deleteCartItem = deleteCartItem;
 module.exports.deleteManyCartItems = deleteManyCartItems;
 module.exports.getSubTotalUsd = getSubTotalUsd;
+module.exports.cartWeightSum = cartWeightSum;

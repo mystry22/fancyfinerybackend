@@ -59,6 +59,9 @@ const Cart = new mongoose.Schema({
     description: {
         type: String
     },
+    weight : {
+        type: Number,
+    },
     
     
     
