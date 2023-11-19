@@ -59,6 +59,16 @@ const Product = new mongoose.Schema({
         min: 2,
         max: 1005
     },
+    stock: {
+        type: String,
+        min: 2,
+        max: 1005
+    },
+    weight: {
+        type: String,
+        min: 2,
+        max: 1005
+    },
     
 
     

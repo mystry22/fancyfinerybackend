@@ -24,7 +24,9 @@ router.post('/addproduct', (req, res) => {
         image_link: req.body.image_link,
         price_usd: req.body.price_usd,
         old_price_usd: req.body.old_price_usd,
-        video: req.body.video
+        video: req.body.video,
+        stock:req.body.stock,
+        weight:req.body.weight
     };
 
     createNewProduct(data).then(feed => {
@@ -46,7 +48,7 @@ router.post('/addprodimage', async (req, res) => {
     const isUploaded = await publitio.uploadFile(file, 'file');
 
     if (isUploaded.code == 201) {
-        const imageName = isUploaded.url_download;
+        const imageName = isUploaded.url_short;
         const success = await uploadProductImage(prod_id, imageName);
         if (success) {
             res.json('Product Image Upload Successful')
@@ -202,6 +204,17 @@ router.post('/getcurrency',async(req,res)=>{
     }else{
         res.json('not set');
     }
+});
+
+router.post('/getstockvalue',async(req,res)=>{
+    const data = {
+        prod_id: req.body.prod_id
+    }
+
+    const prods = await prodInfo(data);
+    res.json(prods.stock);
+
+
 });
 
 
