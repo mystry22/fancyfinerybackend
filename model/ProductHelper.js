@@ -71,6 +71,13 @@ const searchName = async function(prod_name){
     return search;
 }
 
+const updateStock = async function(prod_id,stock){
+    const update = await Product.updateOne({prod_id : prod_id}, {$set : {stock: stock}});
+    if(update){
+        return 'ok';
+    }
+}
+
 
 
 
@@ -156,6 +163,7 @@ module.exports.allCategories = allCategories;
 module.exports.prodInfo =prodInfo;
 module.exports.shopProducts = shopProducts;
 module.exports.searchName = searchName;
+module.exports.updateStock = updateStock;
 
 
 

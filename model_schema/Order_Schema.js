@@ -10,6 +10,11 @@ const Order = new mongoose.Schema({
         min: 2,
         max: 1005
     },
+    country: {
+        type: String,
+        min: 2,
+        max: 1005
+    },
     address: {
         type: String,
         min: 2,

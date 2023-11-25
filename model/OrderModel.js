@@ -93,6 +93,11 @@ const getSubTotal = async function(){
     return subTotal;
 }
 
+const getCurrentOrderd = async function(ip){
+    const orderExist = await Order.find({user_ip : ip});
+    return orderExist;
+}
+
 
 
 
@@ -112,4 +117,5 @@ module.exports.updatePendingOrder = updatePendingOrder;
 module.exports.updateWorkingOrder = updateWorkingOrder;
 module.exports.getWorkingDetails = getWorkingDetails;
 module.exports.getSubTotal = getSubTotal;
+module.exports.getCurrentOrderd = getCurrentOrderd;
 

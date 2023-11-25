@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const {saveOrder,getOrder,sumPending,sumWorking,sumReady,sumRejected,getPending,getWorking,getReady,getRejected,
-  getPendingDetails,getReadyDetails,updatePendingOrder,updateWorkingOrder,getWorkingDetails,getSubTotal} = require('../model/OrderModel');
+  getPendingDetails,getReadyDetails,updatePendingOrder,updateWorkingOrder,getWorkingDetails,getSubTotal,getCurrentOrderd} = require('../model/OrderModel');
 const {getCartItems,deleteManyCartItems} = require('../model/CartHelper');
 const {toDate,orderNotification,custNotification} = require('../functions/Helper_functions');
+const {prodInfo,updateStock} = require('../model/ProductHelper');
   
 
   router.post('/completeorder',(req,res)=>{
@@ -23,6 +24,7 @@ const {toDate,orderNotification,custNotification} = require('../functions/Helper
 
     getCartItems(ip).then(feed =>{
         feed.forEach(doInsert);
+        
         function doInsert(entry){
             const data = {
                 lga:lga,
@@ -50,6 +52,7 @@ const {toDate,orderNotification,custNotification} = require('../functions/Helper
                 status: 'Pending',
                 country: country,
             }
+          
             orderNotification(
               full_name,
               email,
@@ -216,6 +219,26 @@ const {toDate,orderNotification,custNotification} = require('../functions/Helper
 
   router.post('/getsearch',(req,res)=>{
     res.json('Hello')
+  });
+
+  router.post('/managestock',async(req,res)=>{
+    const ip = req.body.ip;
+
+    const userOrderd = await getCurrentOrderd(ip)
+
+    userOrderd.forEach(async(userOrdered)=>{
+      const getProductStock = await prodInfo({prod_id : userOrdered.prod_id});
+    if(getProductStock.stock >= userOrdered.qty ){
+      const newStockValue = getProductStock.stock - userOrdered.qty;
+      await updateStock(userOrdered.prod_id, newStockValue)
+      
+    }else{
+      res.json('Product out of stock');
+    }
+    });
+
+    res.json('Product stock updated successfully');
+
   });
 
 
