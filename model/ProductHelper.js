@@ -80,7 +80,7 @@ const updateStock = async function(prod_id,stock){
 
 const deleteCategory = async(data)=>{
    
-    const deleteOne = await Product.deleteOne(data);
+    const deleteOne = await Category.deleteOne(data);
     if(deleteOne){
         return 'ok';
     }else{

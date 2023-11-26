@@ -231,7 +231,7 @@ router.post('/getstockvalue',async(req,res)=>{
 });
 
 router.get('/testing',(req,res)=>{
-    res.json('Hello still test new deployment');
+    res.json({msg:'Updated delete category'});
 });
 
 
