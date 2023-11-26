@@ -236,7 +236,7 @@ router.post('/getstockvalue',async(req,res)=>{
 });
 
 router.get('/testing',(req,res)=>{
-    res.json({msg:'Updated delete'});
+    res.json({msg:'Updated delete test'});
 });
 
 
