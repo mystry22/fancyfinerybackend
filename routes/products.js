@@ -218,7 +218,7 @@ router.post('/getstockvalue',async(req,res)=>{
 });
 
 router.get('/testing',(req,res)=>{
-    res.json('Hello still testing');
+    res.json('Hello still test');
 })
 
 
