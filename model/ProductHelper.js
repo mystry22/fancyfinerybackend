@@ -26,8 +26,9 @@ const deleteProduct = async function(data){
     }
 }
 
-const editProduct = async(prod_id,prod_name,price,old_price,cat_name,description,display_home)=>{
-    const update = await Product.updateOne({prod_id : prod_id}, {$set : {prod_name:prod_name, price : price,old_price : old_price,cat_name : cat_name,description : description, display_home : display_home}});
+const editProduct = async(prod_id,prod_name,price,old_price,cat_name,description,display_home, weight,stock,price_usd,old_price_usd)=>{
+    const update = await Product.updateOne({prod_id : prod_id}, {$set : {prod_name:prod_name, price : price,old_price : old_price,cat_name : cat_name,description : description, display_home : display_home,
+    weight:weight, stock:stock,price_usd:price_usd,old_price_usd:old_price_usd}});
     if(update){
         return 'ok';
     }

@@ -84,8 +84,13 @@ router.post('/editproduct', (req, res) => {
     const cat_name = req.body.cat_name;
     const description = req.body.prod_desc;
     const display_home = req.body.display_home;
+    const weight = req.body.weight;
+    const stock = req.body.stock;
+    const price_usd = req.body.price_usd;
+    const old_price_usd = req.body.old_price_usd;
 
-    editProduct(prod_id, prod_name, price, old_price, cat_name, description, display_home)
+
+    editProduct(prod_id, prod_name, price, old_price, cat_name, description, display_home, weight,stock,price_usd,old_price_usd)
         .then(feed => {
             if (feed == 'ok') {
                 res.json('Product Edited Successfuly');
