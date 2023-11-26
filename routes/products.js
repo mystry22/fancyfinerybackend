@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getCustomDate } = require('../utility_functions/util_func');
 const { createNewProduct, uploadProductImage, deleteProduct, editProduct, homeProducts, allProducts,
-    createCategory, allCategories, prodInfo, shopProducts, searchName } = require('../model/ProductHelper');
+    createCategory, allCategories, prodInfo, shopProducts, searchName,deleteCategory } = require('../model/ProductHelper');
 const {saveCurrencyOption,getCurrency,updateCurrency} = require('../model/UserModel');
 require('dotenv').config();
 const PublitioAPI = require('publitio_js_sdk').default;
@@ -139,6 +139,19 @@ router.post('/addcategory', (req, res) => {
     })
 });
 
+router.post('/removecategory', (req, res) => {
+    const data = {
+        cat_id: req.body.cat_id
+    }
+    deleteCategory(data).then(feed => {
+        if (feed == 'ok') {
+            res.json('Category deleted successfuly');
+        } else {
+            res.json('Unable to delete caterory now try again later');
+        }
+    })
+});
+
 router.post('/search', async (req, res) => {
     const prod_name = req.body.prod_name;
     const searchRes = await searchName(prod_name);
@@ -219,7 +232,8 @@ router.post('/getstockvalue',async(req,res)=>{
 
 router.get('/testing',(req,res)=>{
     res.json('Hello still test new deployment');
-})
+});
+
 
 
 

@@ -78,6 +78,17 @@ const updateStock = async function(prod_id,stock){
     }
 }
 
+const deleteCategory = async(data)=>{
+   
+    const deleteOne = await Product.deleteOne(data);
+    if(deleteOne){
+        return 'ok';
+    }else{
+        return 'not okay';
+    }
+ 
+}
+
 
 
 
@@ -164,6 +175,7 @@ module.exports.prodInfo =prodInfo;
 module.exports.shopProducts = shopProducts;
 module.exports.searchName = searchName;
 module.exports.updateStock = updateStock;
+module.exports.deleteCategory = deleteCategory;
 
 
 
