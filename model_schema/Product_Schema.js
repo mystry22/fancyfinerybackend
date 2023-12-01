@@ -49,6 +49,18 @@ const Product = new mongoose.Schema({
         type: String,
         
     },
+    image_variation1: {
+        type: String,
+        
+    },
+    image_variation2: {
+        type: String,
+        
+    },
+    image_link: {
+        type: String,
+        
+    },
     description: {
         type: String,
         min: 2,

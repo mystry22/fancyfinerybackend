@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { getCustomDate } = require('../utility_functions/util_func');
 const { createNewProduct, uploadProductImage, deleteProduct, editProduct, homeProducts, allProducts,
-    createCategory, allCategories, prodInfo, shopProducts, searchName,deleteCategory } = require('../model/ProductHelper');
+    createCategory, allCategories, prodInfo, shopProducts, searchName,deleteCategory,
+    uploadProductImagevariation1,uploadProductImagevariation2
+} = require('../model/ProductHelper');
 const {saveCurrencyOption,getCurrency,updateCurrency} = require('../model/UserModel');
 require('dotenv').config();
 const PublitioAPI = require('publitio_js_sdk').default;
@@ -26,7 +28,9 @@ router.post('/addproduct', (req, res) => {
         old_price_usd: req.body.old_price_usd,
         video: req.body.video,
         stock:req.body.stock,
-        weight:req.body.weight
+        weight:req.body.weight,
+        image_variation1:req.body.image_variation1,
+        image_variation2:req.body.image_variation2,
     };
 
     createNewProduct(data).then(feed => {
@@ -50,6 +54,54 @@ router.post('/addprodimage', async (req, res) => {
     if (isUploaded.code == 201) {
         const imageName = isUploaded.url_short;
         const success = await uploadProductImage(prod_id, imageName);
+        if (success) {
+            res.json('Product Image Upload Successful')
+        } else {
+            res.json('Error with image upload')
+        }
+
+    } else {
+        res.json('Error with image upload')
+
+    }
+
+});
+
+router.post('/addprodimagevariation1', async (req, res) => {
+
+    const publitio = new PublitioAPI(process.env.API_Key, process.env.API_Secret);
+    const file = req.files.image.data;
+    const prod_id = req.body.prod_id;
+
+    const isUploaded = await publitio.uploadFile(file, 'file');
+
+    if (isUploaded.code == 201) {
+        const imageName = isUploaded.url_short;
+        const success = await uploadProductImagevariation1(prod_id, imageName);
+        if (success) {
+            res.json('Product Image Upload Successful')
+        } else {
+            res.json('Error with image upload')
+        }
+
+    } else {
+        res.json('Error with image upload')
+
+    }
+
+});
+router.post('/addprodimagevariation2', async (req, res) => {
+   
+
+    const publitio = new PublitioAPI(process.env.API_Key, process.env.API_Secret);
+    const file = req.files.image.data;
+    const prod_id = req.body.prod_id;
+
+    const isUploaded = await publitio.uploadFile(file, 'file');
+
+    if (isUploaded.code == 201) {
+        const imageName = isUploaded.url_short;
+        const success = await uploadProductImagevariation2(prod_id, imageName);
         if (success) {
             res.json('Product Image Upload Successful')
         } else {

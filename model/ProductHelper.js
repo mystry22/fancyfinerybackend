@@ -19,6 +19,22 @@ const uploadProductImage = async function(prod_id,image_link){
     }
 }
 
+const uploadProductImagevariation1 = async function(prod_id,image_link){
+    
+    const update = await Product.updateOne({prod_id : prod_id}, {$set : {image_variation1: image_link}});
+    if(update){
+        return 'ok';
+    }
+}
+
+const uploadProductImagevariation2 = async function(prod_id,image_link){
+    
+    const update = await Product.updateOne({prod_id : prod_id}, {$set : {image_variation2: image_link}});
+    if(update){
+        return 'ok';
+    }
+}
+
 const deleteProduct = async function(data){
     const deleteOne = await Product.deleteOne(data);
     if(deleteOne){
@@ -177,6 +193,8 @@ module.exports.shopProducts = shopProducts;
 module.exports.searchName = searchName;
 module.exports.updateStock = updateStock;
 module.exports.deleteCategory = deleteCategory;
+module.exports.uploadProductImagevariation1 = uploadProductImagevariation1;
+module.exports.uploadProductImagevariation2 = uploadProductImagevariation2
 
 
 
