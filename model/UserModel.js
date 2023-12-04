@@ -39,6 +39,14 @@ const updateCurrency = async function(ip,base_currency){
     }
 }
 
+const setDelivery = async function(ip,delivery_fee){
+    
+    const update = await CurrencySchema.updateOne({ip : ip}, {$set : {delivery_fee: delivery_fee}});
+    if(update){
+        return 'ok';
+    }
+}
+
 
 module.exports.signup = signup;
 module.exports.checkEmail = checkEmail;
@@ -47,4 +55,5 @@ module.exports.getAllUsers = getAllUsers;
 module.exports.saveCurrencyOption = saveCurrencyOption;
 module.exports.getCurrency = getCurrency;
 module.exports.updateCurrency = updateCurrency;
+module.exports.setDelivery = setDelivery;
 

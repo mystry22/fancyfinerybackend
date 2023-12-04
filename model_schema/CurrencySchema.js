@@ -12,6 +12,10 @@ const CurrencySchema = new mongoose.Schema({
         min: 2,
         max: 1005
     },
+    delivery_fee: {
+        type: Number,
+        
+    },
 
     
     

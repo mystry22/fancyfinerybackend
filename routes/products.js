@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { getCustomDate } = require('../utility_functions/util_func');
 const { createNewProduct, uploadProductImage, deleteProduct, editProduct, homeProducts, allProducts,
-    createCategory, allCategories, prodInfo, shopProducts, searchName,deleteCategory,
-    uploadProductImagevariation1,uploadProductImagevariation2
+    createCategory, allCategories, prodInfo, shopProducts, searchName, deleteCategory,
+    uploadProductImagevariation1, uploadProductImagevariation2,
 } = require('../model/ProductHelper');
-const {saveCurrencyOption,getCurrency,updateCurrency} = require('../model/UserModel');
+const { saveCurrencyOption, getCurrency, updateCurrency,setDelivery } = require('../model/UserModel');
 require('dotenv').config();
 const PublitioAPI = require('publitio_js_sdk').default;
-const {contactMail} = require('../functions/Helper_functions');
+const { contactMail } = require('../functions/Helper_functions');
 
 
 
@@ -27,10 +27,10 @@ router.post('/addproduct', (req, res) => {
         price_usd: req.body.price_usd,
         old_price_usd: req.body.old_price_usd,
         video: req.body.video,
-        stock:req.body.stock,
-        weight:req.body.weight,
-        image_variation1:req.body.image_variation1,
-        image_variation2:req.body.image_variation2,
+        stock: req.body.stock,
+        weight: req.body.weight,
+        image_variation1: req.body.image_variation1,
+        image_variation2: req.body.image_variation2,
     };
 
     createNewProduct(data).then(feed => {
@@ -91,7 +91,7 @@ router.post('/addprodimagevariation1', async (req, res) => {
 
 });
 router.post('/addprodimagevariation2', async (req, res) => {
-   
+
 
     const publitio = new PublitioAPI(process.env.API_Key, process.env.API_Secret);
     const file = req.files.image.data;
@@ -142,7 +142,7 @@ router.post('/editproduct', (req, res) => {
     const old_price_usd = req.body.old_price_usd;
 
 
-    editProduct(prod_id, prod_name, price, old_price, cat_name, description, display_home, weight,stock,price_usd,old_price_usd)
+    editProduct(prod_id, prod_name, price, old_price, cat_name, description, display_home, weight, stock, price_usd, old_price_usd)
         .then(feed => {
             if (feed == 'ok') {
                 res.json('Product Edited Successfuly');
@@ -219,64 +219,84 @@ router.post('/search', async (req, res) => {
     }
 });
 
-router.post('/contact',async(req,res)=>{
+router.post('/contact', async (req, res) => {
 
     const from = req.body.email;
     const subject = req.body.subject;
     const message = req.body.message;
     const full_name = req.body.full_name;
 
-    try{
+    try {
         console.log('trying to send')
-        const response = await contactMail(full_name,from,message,subject);
-        if(response === 'OK'){
-        res.json('mail sent');
-        }else{
-        res.json('Unable to complete action at the moment');
+        const response = await contactMail(full_name, from, message, subject);
+        if (response === 'OK') {
+            res.json('mail sent');
+        } else {
+            res.json('Unable to complete action at the moment');
         }
-    }catch(err){
+    } catch (err) {
         console.log(err)
         res.json('Unable to complete action at the moment');
     }
-    
-    
+
+
 });
 
-router.post('/changecurrency',async(req,res)=>{
-  
+router.post('/changecurrency', async (req, res) => {
+
     const ip = req.body.ip;
     const currOption = req.body.base_currency;
 
-    const isSet = await getCurrency({'ip':ip});
+    const isSet = await getCurrency({ 'ip': ip });
 
-    if(isSet){
-        await updateCurrency(ip,currOption);
+    if (isSet) {
+        await updateCurrency(ip, currOption);
         res.json('currency update')
-    }else{
-        const data ={
-            ip:ip,
-            base_currency: currOption
+    } else {
+        const data = {
+            ip: ip,
+            base_currency: currOption,
+            delivery_fee: 0
         }
         await saveCurrencyOption(data);
         res.json('currency update')
     }
 
-    
+
 });
 
-router.post('/getcurrency',async(req,res)=>{
-    const ip = req.body.ip;
-    const isSet = await getCurrency({'ip':ip});
+router.post('/savedeliveryfee', async (req, res) => {
 
-    if(isSet){
-    
-        res.json(isSet);
+    const ip = req.body.ip;
+    const delivery_fee = req.body.delivery_fee;
+
+    const isSet = await setDelivery(ip,delivery_fee);
+    if(isSet == 'ok'){
+        res.json('delivery set')
     }else{
+        res.json('delivery not set')
+    }
+
+
+   
+
+
+
+});
+
+router.post('/getcurrency', async (req, res) => {
+    const ip = req.body.ip;
+    const isSet = await getCurrency({ 'ip': ip });
+
+    if (isSet) {
+
+        res.json(isSet);
+    } else {
         res.json('not set');
     }
 });
 
-router.post('/getstockvalue',async(req,res)=>{
+router.post('/getstockvalue', async (req, res) => {
     const data = {
         prod_id: req.body.prod_id
     }
@@ -287,8 +307,8 @@ router.post('/getstockvalue',async(req,res)=>{
 
 });
 
-router.get('/testing',(req,res)=>{
-    res.json({msg:'Updated delete test'});
+router.get('/testing', (req, res) => {
+    res.json({ msg: 'Updated delete test' });
 });
 
 
