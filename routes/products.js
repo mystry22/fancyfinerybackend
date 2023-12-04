@@ -308,7 +308,7 @@ router.post('/getstockvalue', async (req, res) => {
 });
 
 router.get('/testing', (req, res) => {
-    res.json({ msg: 'Updated delete test' });
+    res.json({ msg: 'Updated delete test responsible' });
 });
 
 
