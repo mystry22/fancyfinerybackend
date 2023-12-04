@@ -270,12 +270,26 @@ router.post('/savedeliveryfee', async (req, res) => {
     const ip = req.body.ip;
     const delivery_fee = req.body.delivery_fee;
 
-    const isSet = await setDelivery(ip,delivery_fee);
-    if(isSet == 'ok'){
+    const isSet = await getCurrency({ 'ip': ip });
+
+    if (isSet) {
+        const change = await setDelivery(ip, delivery_fee);
         res.json('delivery set')
     }else{
-        res.json('delivery not set')
+        const data = {
+            ip: ip,
+            delivery_fee: delivery_fee
+        }
+        await saveCurrencyOption(data);
+        res.json('delivery set')
     }
+
+    // const isSet = await setDelivery(ip,delivery_fee);
+    // if(isSet == 'ok'){
+    //     res.json('delivery set')
+    // }else{
+    //     res.json('delivery not set')
+    // }
 
 
    
