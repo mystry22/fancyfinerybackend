@@ -6,6 +6,7 @@ const { createNewProduct, uploadProductImage, deleteProduct, editProduct, homePr
     uploadProductImagevariation1, uploadProductImagevariation2,
 } = require('../model/ProductHelper');
 const { saveCurrencyOption, getCurrency, updateCurrency,setDelivery } = require('../model/UserModel');
+const {save_delivery,findDelivery,deleteEntry} = require('../model/Deliverymodel');
 require('dotenv').config();
 const PublitioAPI = require('publitio_js_sdk').default;
 const { contactMail } = require('../functions/Helper_functions');
@@ -304,7 +305,7 @@ router.post('/getcurrency', async (req, res) => {
     const ip = req.body.ip;
     const isSet = await getCurrency({ 'ip': ip });
 
-    if (isSet) {
+    if (isSet.length >0) {
 
         res.json(isSet);
     } else {
@@ -323,9 +324,61 @@ router.post('/getstockvalue', async (req, res) => {
 
 });
 
-router.get('/testing', (req, res) => {
-    res.json({ msg: 'Updated delete test responsible' });
+
+
+router.post('/storedelivery', async(req, res) => {
+    const data ={
+        delivery_name: req.body.delivery_name,
+        delivery_country: req.body.delivery_country,
+        street: req.body.street,
+        city: req.body.city,
+        phone: req.body.phone,
+        delivery_state: req.body.delivery_state,
+        user_ip: req.body.user_ip,
+        delivery_fee: req.body.delivery_fee,
+        lga: req.body.lga
+    }
+
+  await save_delivery(data);
+
+  res.json('delivery info saved');
+  
 });
+
+router.post('/getdeliveryinfo',async(req,res)=>{
+    const data = {
+        user_ip: req.body.user_ip
+    }
+
+    const respo = await findDelivery(data);
+    if(respo){
+        res.json(respo);
+
+    }else{
+        res.json('not available')
+    }
+
+    
+})
+
+router.post('/deletedeliveryentry',async(req,res)=>{
+    const data = {
+        user_ip: req.body.user_ip
+    }
+    const isdeleted = await deleteEntry(data);
+
+    if(isdeleted == 'okay'){
+        res.json('delivery entry deleted')
+    }else{
+        res.json('Not deleted')
+    }
+});
+
+router.get('/testing', (req, res) => {
+    res.json({ msg: 'implemented database delivery option' });
+});
+
+
 
 
 
