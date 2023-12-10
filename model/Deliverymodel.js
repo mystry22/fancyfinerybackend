@@ -12,7 +12,7 @@ const findDelivery = async function(data){
 }
 
 const deleteEntry = async function(data){
-    const deleteOne = await Delivery.deleteOne(data);
+    const deleteOne = await Delivery.deleteMany(data);
     if(deleteOne){
         return 'okay'
     }else{}
