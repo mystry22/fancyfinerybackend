@@ -48,6 +48,9 @@ const Delivery = new mongoose.Schema({
     },
     delivery_fee : {
         type: Number,
+    },
+    weight : {
+        type: Number,
     }
     
     

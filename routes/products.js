@@ -336,7 +336,8 @@ router.post('/storedelivery', async(req, res) => {
         delivery_state: req.body.delivery_state,
         user_ip: req.body.user_ip,
         delivery_fee: req.body.delivery_fee,
-        lga: req.body.lga
+        lga: req.body.lga,
+        weight: req.body.weight
     }
 
   await save_delivery(data);
