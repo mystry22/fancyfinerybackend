@@ -41,7 +41,7 @@ const updateCurrency = async function(ip,base_currency){
 
 const setDelivery = async function(ip,delivery_fee){
     
-    const update = await CurrencySchema.updateOne({ip : ip}, {$set : {delivery_fee: delivery_fee}});
+    const update = await CurrencySchema.updateOne({ip : ip}, {$set : {base_currency: delivery_fee}});
     if(update){
         return 'ok';
     }

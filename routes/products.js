@@ -246,11 +246,12 @@ router.post('/contact', async (req, res) => {
 router.post('/changecurrency', async (req, res) => {
 
     const ip = req.body.ip;
-    const currOption = req.body.base_currency;
+    const currOption = req.body.base_curency;
 
     const isSet = await getCurrency({ 'ip': ip });
 
     if (isSet) {
+
         await updateCurrency(ip, currOption);
         res.json('currency update')
     } else {
@@ -305,7 +306,7 @@ router.post('/getcurrency', async (req, res) => {
     const ip = req.body.ip;
     const isSet = await getCurrency({ 'ip': ip });
 
-    if (isSet.length >0) {
+    if (isSet) {
 
         res.json(isSet);
     } else {
